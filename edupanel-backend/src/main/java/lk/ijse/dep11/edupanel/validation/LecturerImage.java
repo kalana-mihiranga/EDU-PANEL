@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LecturerImage {
-    long maxFileSize() default 500 *1024;
+    long maxFileSize() default 3 *1024 *1024;
     String message() default "Invalid image file or file size exceeds the maximum file size {maxFileSize}";
 
     Class<?>[] groups() default {};
