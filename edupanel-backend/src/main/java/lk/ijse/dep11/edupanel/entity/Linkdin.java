@@ -5,17 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-@Data@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Entity
-@Table(name = "picture")
-public class Picture {
-    @Id
+@AllArgsConstructor
+@Entity(name = "linkdin")
+public class Linkdin implements Serializable {
     @OneToOne
+    @Id
     @JoinColumn(name = "lecturer_id",referencedColumnName = "id")
     private Lecturer lecturer;
-    @Column(name = "picture_path",nullable = false,length = 400)
-    private String picturePath;
+    @Column(nullable = false,length = 2000)
+    private String url;
 
 }

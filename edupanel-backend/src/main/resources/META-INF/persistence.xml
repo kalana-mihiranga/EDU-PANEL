@@ -5,6 +5,9 @@
              version="3.0">
   <persistence-unit name="default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>lk.ijse.dep11.edupanel.entity.Linkdin</class>
+    <class>lk.ijse.dep11.edupanel.entity.Picture</class>
+    <class>lk.ijse.dep11.edupanel.entity.Lecturer</class>
     
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/dep11_edupanel"/>
@@ -14,6 +17,7 @@
 
      <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
+
     </properties>
 
   </persistence-unit>
