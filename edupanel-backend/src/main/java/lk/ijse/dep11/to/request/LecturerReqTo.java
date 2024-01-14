@@ -2,6 +2,7 @@ package lk.ijse.dep11.to.request;
 
 import jdk.jfr.DataAmount;
 import lk.ijse.dep11.edupanel.util.LecturerType;
+import lk.ijse.dep11.edupanel.validation.LecturerImage;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +34,9 @@ public class LecturerReqTo implements Serializable {
     @PositiveOrZero(groups = Update.class,message = "invalid display order")
 
   private  Integer displayOrder;
+
+    @LecturerImage
+
   private  MultipartFile picture;
 
   @Pattern(regexp = "^http(s)://.+$",message = "Invalid linkdin Url")
