@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "81721b18-d321-405e-a9cb-e02f4211aee4",
+		"name": "Lecturers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30832302",
+		"_collection_link": "https://www.postman.com/solar-capsule-682766/workspace/edupanel/collection/30831934-81721b18-d321-405e-a9cb-e02f4211aee4?action=share&source=collection_link&creator=30832302"
+	},
+	"item": [
+		{
+			"name": "Create New Lecturer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Nuwan Ramindu",
+							"type": "text"
+						},
+						{
+							"key": "designation",
+							"value": "Lecturer",
+							"type": "text"
+						},
+						{
+							"key": "qualifications",
+							"value": "BSc (Hons) in Computing",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "full-time",
+							"type": "text"
+						},
+						{
+							"key": "picture",
+							"type": "file",
+							"src": "/home/ranjith-suranga/Downloads/profile-pic1.png"
+						},
+						{
+							"key": "linkedin",
+							"value": "https://linkedin.com/nuwan-ramindu",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Lecturer Details",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Kasun Sampath",
+							"type": "text"
+						},
+						{
+							"key": "designation",
+							"value": "Senior Trainer",
+							"type": "text"
+						},
+						{
+							"key": "qualifications",
+							"value": "BSc (Hons) in Computing",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "full-time",
+							"type": "text"
+						},
+						{
+							"key": "displayOrder",
+							"value": "5",
+							"type": "text"
+						},
+						{
+							"key": "picture",
+							"type": "file",
+							"src": "/home/ranjith-suranga/Downloads/profile-pic3.png"
+						},
+						{
+							"key": "linkedin",
+							"value": "https://linkedin.com/kasun-sampath",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers/2",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Lecturer Details via JSON",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Kasun Sampath",
+							"type": "text"
+						},
+						{
+							"key": "designation",
+							"value": "Senior Trainer",
+							"type": "text"
+						},
+						{
+							"key": "qualifications",
+							"value": "BSc (Hons) in Computing",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "visiting",
+							"type": "text"
+						},
+						{
+							"key": "displayOrder",
+							"value": "5",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "picture",
+							"type": "file",
+							"src": "/home/ranjith-suranga/Downloads/profile-pic2.png"
+						},
+						{
+							"key": "linkedin",
+							"value": "https://linkedin.com/kasun-sampath",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Lecturer",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers/8",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Lecturers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lecturer Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers/8",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Full-time Lecturers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers?type=full-time",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "full-time"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Visiting Lecturers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_BASE_URL}}/lecturers?type=visiting",
+					"host": [
+						"{{API_BASE_URL}}"
+					],
+					"path": [
+						"lecturers"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "visiting"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
