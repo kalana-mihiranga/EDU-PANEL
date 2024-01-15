@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpUpgradeHandler;
 import java.sql.Blob;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -97,7 +99,18 @@ public class LecturerHttpController {
     }
 
     @GetMapping(value = "/{lecturer-id",produces = "application/json")
-    public void getLecturerDetails(@PathVariable("lecturer-id") Integer lecturerId){}
+    public LecturerTo getLecturerDetails(@PathVariable("lecturer-id") Integer lecturerId){
+        Lecturer lecturer = em.find(Lecturer.class, lecturerId);
+        if(lecturer==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND );
+        LecturerTo lecturerTo=mapper.map(lecturer,LecturerTo.class);
+        if(lecturer.getPicture()!=null){
+            lecturer.setPicture(bucket.get(lecturer.getPicture().getPicturePath()).signUrl(1, TimeUnit.DAYS, Storage.SignUrlOption.withV4Signature()).toString());
+        }
+        return lecturerTo;
+
+
+
+    }
 
     @GetMapping (params = "type=full-time",produces = "application/json")
     public List<LecturerTo> getFullTimeLecturers(){
@@ -111,6 +124,7 @@ public class LecturerHttpController {
             return lecturerTo;
 
         }).collect(Collectors.toList());
+
         return null;
     }
 
