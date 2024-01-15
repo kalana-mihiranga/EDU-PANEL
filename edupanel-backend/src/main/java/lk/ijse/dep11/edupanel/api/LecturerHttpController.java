@@ -74,11 +74,52 @@ public class LecturerHttpController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{lecturer-id",consumes = "multipart/form-data")
-    public void updateLecturerDetailsViaMultipart(@PathVariable("lecturer-id") Integer lecturerId){}
+    public void updateLecturerDetailsViaMultipart(@PathVariable("lecturer-id") Integer lecturerId,
+                                                  @ModelAttribute @Validated(LecturerReqTo.Update.class) LecturerReqTo lecturerReqTO){
+        Lecturer currentLecturer = em.find(Lecturer.class, lecturerId);
+        if (currentLecturer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        em.getTransaction().begin();
+        try {
+            Lecturer newLecturer = mapper.map(lecturerReqTO, Lecturer.class);
+            newLecturer.setId(lecturerId);
+            newLecturer.setPicture(null);
+            newLecturer.setLinkedin(null);
+
+            if (lecturerReqTO.getPicture() != null) {
+                newLecturer.setPicture(new Picture(newLecturer, "lecturers/" + lecturerId));
+            }
+            if (lecturerReqTO.getLinkedin() != null) {
+                newLecturer.setLinkedin(new Linkdin(newLecturer, lecturerReqTO.getLinkedin()));
+            }
+
+
+            if (newLecturer.getPicture() != null && currentLecturer.getPicture() == null) {
+                em.persist(newLecturer.getPicture());
+                bucket.create(newLecturer.getPicture().getPicturePath(), lecturerReqTO.getPicture().getInputStream(), lecturerReqTO.getPicture().getContentType());
+            } else if (newLecturer.getPicture() == null && currentLecturer.getPicture() != null) {
+                em.remove(currentLecturer.getPicture());
+                bucket.get(currentLecturer.getPicture().getPicturePath()).delete();
+            } else if (newLecturer.getPicture() != null) {
+                em.merge(newLecturer.getPicture());
+                bucket.create(newLecturer.getPicture().getPicturePath(), lecturerReqTO.getPicture().getInputStream(), lecturerReqTO.getPicture().getContentType());
+            }
+
+            em.merge(newLecturer);
+            em.getTransaction().commit();
+        } catch (Throwable t) {
+            em.getTransaction().rollback();
+            throw new RuntimeException(t);
+        }
+
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{lecturer-id",consumes = "application/json")
     public void updateLecturerDetailsViaJson(@PathVariable("lecturer-id") Integer lecturerId){}
+
+
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{lecturer-id")
     public void deleteLecturerDetails(@PathVariable("lecturer-id") Integer lecturerId){

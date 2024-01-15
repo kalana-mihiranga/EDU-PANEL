@@ -32,11 +32,11 @@ private    int id;
    private int displayOrder;
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "lecturer",cascade = {CascadeType.REMOVE})
+    @OneToOne(mappedBy = "lecturer",cascade = {CascadeType.REMOVE,CascadeType.MERGE})
     private Picture picture;
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "Lecturer",cascade = {CascadeType.REMOVE})
+    @OneToOne(mappedBy = "Lecturer",cascade = {CascadeType.REMOVE,CascadeType.MERGE})
     private Linkdin linkedin;
 
     public Lecturer(String name, String destination, LecturerType type, int displayOrder) {
