@@ -1,8 +1,11 @@
 package lk.ijse.dep11.edupanel.api;
 
+import com.google.cloud.storage.Storage;
+import com.google.storage.v2.Bucket;
 import lk.ijse.dep11.edupanel.entity.Lecturer;
 import lk.ijse.dep11.edupanel.entity.Linkdin;
 import lk.ijse.dep11.edupanel.entity.Picture;
+import lk.ijse.dep11.to.LecturerTo;
 import lk.ijse.dep11.to.request.LecturerReqTo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.sql.Blob;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/lecturers")
@@ -20,9 +28,12 @@ public class LecturerHttpController {
     private EntityManager em;
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private Bucket bucket;
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "multipart/form-data",produces ="application/json" )
-    public void createNewLecturer(@ModelAttribute @Validated(LecturerReqTo.Create.class) LecturerReqTo lecturerReqTo ){
+    public LecturerTo createNewLecturer(@ModelAttribute @Validated(LecturerReqTo.Create.class) LecturerReqTo lecturerReqTo ){
         em.getTransaction().begin();
         try{
 //            Lecturer lecturer = new Lecturer(lecturerReqTo.getName(), lecturerReqTo.getDesignation(), lecturerReqTo.getQualification(), lecturerReqTo.getType(), lecturerReqTo.getDisplayOrder());
@@ -31,20 +42,29 @@ public class LecturerHttpController {
             lecturer.setPicture(null);
             lecturer.setLinkedin(null);
             em.persist(lecturer);
+            LecturerTo lecturerTo= mapper.map(lecturer, LecturerTo.class);
 
             if(lecturerReqTo.getLinkedin()!=null){
                 em.persist(new Linkdin(lecturer,lecturerReqTo.getLinkedin()));
+                lecturerTo.setLinkdin(lecturerReqTo.getLinkedin());
             }
             if(lecturerReqTo.getPicture()!=null){
                 Picture picture = new Picture(lecturer, "lectures/" + lecturer.getId());
                 em.persist(picture);
+                Blob blobRef = bucket.create(picture.getPicturePath(), lecturerReqTo.getPicture().getInputStream(), lecturerReqTo.getPicture().getContentType());
+                lecturerTo.setPicture(blobRef.signUrl(1, TimeUnit.DAYS, Storage.SignUrlOption.withV4Signature()).toString());
+
             }
+
+
+
 
             em.getTransaction().commit();
 
+            return lecturerTo;
         }catch (Throwable t){
             em.getTransaction().rollback();
-            throw t;
+            throw new RuntimeException();
         }
 
 
@@ -62,13 +82,26 @@ public class LecturerHttpController {
     public void deleteLecturerDetails(@PathVariable("lecturer-id") Integer lecturerId){}
 
     @GetMapping(produces = "application/json")
-    public void getAllLecturers(){}
+    public List<LecturerTo> getAllLecturers(){
+        TypedQuery<Lecturer> query = em.createQuery("SELECT l FROM Lecturer l", Lecturer.class);
+        query.getResultStream().map(l->{
+            LecturerTo lecturerTo=mapper.map(l,LecturerTo.class);
+            lecturerTo.setLinkdin((l.getLinkedin().getUrl()));
+            if(lecturerTo.getPicture()!=null){
+                lecturerTo.setPicture(bucket.get(l.getPicture().getPicturePath()).signUrl(1, TimeUnit.DAYS, Storage.SignUrlOption.withV4Signature()).toString());
+            }
+            return lecturerTo;
+
+        }).collect(Collectors.toList());
+        return null;
+    }
 
     @GetMapping(value = "/{lecturer-id",produces = "application/json")
     public void getLecturerDetails(@PathVariable("lecturer-id") Integer lecturerId){}
 
     @GetMapping (params = "type=full-time",produces = "application/json")
-    public void getFullTimeLecturers(){}
+    public List<LecturerTo> getFullTimeLecturers(){
+    }
 
     @GetMapping(params = "type=visiting",produces = "application/json")
     public void getVisitingLecturers(){}

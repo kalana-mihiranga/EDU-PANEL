@@ -22,6 +22,22 @@ import java.io.InputStream;
 @EnableWebMvc
 @ComponentScan
 public class WebAppConfig implements WebMvcConfigurer {
+
+
+
+    @Bean
+    public Bucket defaultBucket() throws IOException {
+        InputStream serviceAccount =
+                new ClassPathResource("/edupanel-60033-firebase-adminsdk-po2ms-74b355b4e8.json").getInputStream();
+
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setStorageBucket("edupanel-60033.appspot.com")
+                .build();
+
+        FirebaseApp.initializeApp(options);
+        return StorageClient.getInstance().bucket();
+    }
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new LecturerTypeConverter());
@@ -33,20 +49,5 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     }
 
-    @Bean
-    public Bucket defaultBucket() throws IOException {
 
-        InputStream serviceAccount =
-                new ClassPathResource("/edupanel-60033-firebase-adminsdk-po2ms-74b355b4e8.json").getInputStream();
-
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setStorageBucket("edupanel-60033.appspot.com")
-                .build();
-
-        FirebaseApp.initializeApp(options);
-        return StorageClient.getInstance().bucket();
-
-
-    }
 }
