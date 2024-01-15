@@ -101,6 +101,17 @@ public class LecturerHttpController {
 
     @GetMapping (params = "type=full-time",produces = "application/json")
     public List<LecturerTo> getFullTimeLecturers(){
+        TypedQuery<Lecturer> query = em.createQuery("SELECT l FROM Lecturer l WHERE l.type=lk.ijse.dep11.edupanel.util.LecturerType.FULL_TIME", Lecturer.class);
+        query.getResultStream().map(l->{
+            LecturerTo lecturerTo=mapper.map(l,LecturerTo.class);
+            lecturerTo.setLinkdin((l.getLinkedin().getUrl()));
+            if(lecturerTo.getPicture()!=null){
+                lecturerTo.setPicture(bucket.get(l.getPicture().getPicturePath()).signUrl(1, TimeUnit.DAYS, Storage.SignUrlOption.withV4Signature()).toString());
+            }
+            return lecturerTo;
+
+        }).collect(Collectors.toList());
+        return null;
     }
 
     @GetMapping(params = "type=visiting",produces = "application/json")
