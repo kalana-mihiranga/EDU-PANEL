@@ -116,7 +116,9 @@ public class LecturerHttpController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{lecturer-id",consumes = "application/json")
-    public void updateLecturerDetailsViaJson(@PathVariable("lecturer-id") Integer lecturerId){}
+    public void updateLecturerDetailsViaJson(@PathVariable("lecturer-id") Integer lecturerId){
+
+    }
 
 
 
